@@ -21,30 +21,35 @@
       </div>
     </header>
 
-    <section class="panel topbar">
-      <div class="controls">
-        <label>Difficulty
-          <select id="difficulty">
-            <option value="easy">Easy (9x9, 10 mines)</option>
-            <option value="medium" selected>Medium (16x16, 40 mines)</option>
-            <option value="hard">Hard (30x16, 99 mines)</option>
-          </select>
-        </label>
-        <button id="new-game">New Game</button>
-      </div>
+    <section class="layout">
+      <aside class="sidebar">
+        <section class="panel topbar">
+          <div class="controls vertical">
+            <label>Difficulty
+              <select id="difficulty">
+                <option value="easy">Easy (9x9, 10 mines)</option>
+                <option value="medium" selected>Medium (16x16, 40 mines)</option>
+                <option value="hard">Hard (30x16, 99 mines)</option>
+              </select>
+            </label>
+            <button id="new-game">New Game</button>
+          </div>
+        </section>
+
+        <section class="panel hud sidebar-hud">
+          <div>🚩 Mines Left: <span id="mines-left">0</span></div>
+          <div>⏱️ Time: <span id="timer">0</span>s</div>
+          <div>Status: <span id="status">Ready</span></div>
+        </section>
+      </aside>
+
+      <section class="game-area">
+        <section id="board" class="board panel" aria-label="Minesweeper board"></section>
+        <p class="help">
+          Left click: reveal • Right click: flag • Mobile: long press = flag
+        </p>
+      </section>
     </section>
-
-    <section class="panel hud">
-      <div>🚩 Mines Left: <span id="mines-left">0</span></div>
-      <div>⏱️ Time: <span id="timer">0</span>s</div>
-      <div>Status: <span id="status">Ready</span></div>
-    </section>
-
-    <section id="board" class="board panel" aria-label="Minesweeper board"></section>
-
-    <p class="help">
-      Left click: reveal • Right click: flag • Mobile: long press = flag
-    </p>
   </main>
 
   <script src="https://sdk.play.fun/latest"></script>

@@ -62,6 +62,20 @@ body.embedded { --pf-top-offset: 106px; }
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: calc(var(--pf-top-offset) + 4px);
+}
+
+.game-area { min-width: 0; }
+
 .topbar { padding: 10px; margin-bottom: 10px; }
 
 .controls {
@@ -71,16 +85,23 @@ body.embedded { --pf-top-offset: 106px; }
   flex-wrap: wrap;
 }
 
+.controls.vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+
 label { font-weight: 600; font-size: .95rem; }
 
 select, button {
-  margin-left: 8px;
   padding: 9px 12px;
   border-radius: 10px;
   border: 1px solid #6977b8;
   background: #111a46;
   color: var(--text);
 }
+label select { margin-left: 8px; }
+.controls.vertical label select { margin-left: 0; margin-top: 6px; width: 100%; }
+.controls.vertical button { width: 100%; }
 button {
   cursor: pointer;
   font-weight: 700;
@@ -94,6 +115,12 @@ button {
   justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.sidebar-hud {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .board {
@@ -147,4 +174,6 @@ button {
   body.embedded { --pf-top-offset: 124px; }
   .hero { margin-bottom: 8px; }
   .hero-art { width: 58px; height: 58px; }
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
 }
