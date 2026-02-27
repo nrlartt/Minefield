@@ -13,6 +13,34 @@ const newGameBtn = document.getElementById('new-game');
 
 let game;
 
+const GAME_ID = 'e4d2c778-a41d-47e8-bbff-4490821495f0';
+let sdk = null;
+let sdkReady = false;
+
+function initSDK() {
+  try {
+    if (!window.OpenGameSDK) return;
+    sdk = new window.OpenGameSDK({ gameId: GAME_ID, ui: { usePointsWidget: true } });
+    sdk.init().then(() => { sdkReady = true; }).catch(() => {});
+  } catch (_) {}
+}
+
+function sdkAddPoints(points) {
+  if (!sdkReady || !sdk || !Number.isFinite(points) || points <= 0) return;
+  try { sdk.addPoints(Math.floor(points)); } catch (_) {}
+}
+
+function sdkSavePoints() {
+  if (!sdkReady || !sdk) return;
+  try { sdk.savePoints(); } catch (_) {}
+}
+
+function calculateWinPoints() {
+  const difficultyBase = { easy: 120, medium: 260, hard: 520 }[game.mode] || 200;
+  const speedBonus = Math.max(0, 240 - game.timer);
+  return Math.min(2000, difficultyBase + speedBonus);
+}
+
 function createGame(mode = 'medium') {
   const cfg = configMap[mode];
   const total = cfg.cols * cfg.rows;
@@ -168,7 +196,10 @@ function checkWin() {
     game.won = true;
     game.over = true;
     stopTimer();
-    setStatus('You win! 🎉');
+    const reward = calculateWinPoints();
+    sdkAddPoints(reward);
+    sdkSavePoints();
+    setStatus(`You win! 🎉 +${reward} pts`);
 
     game.cells.forEach((cell, i) => {
       if (cell.mine && !cell.flagged) {
@@ -199,6 +230,7 @@ function openCell(i) {
     revealAllMines();
     game.over = true;
     stopTimer();
+    sdkSavePoints();
     setStatus('Boom! 💥');
     return;
   }
@@ -271,4 +303,8 @@ difficultyEl.addEventListener('change', () => {
   createGame(difficultyEl.value);
 });
 
+window.addEventListener('beforeunload', sdkSavePoints);
+setInterval(sdkSavePoints, 30000);
+
+initSDK();
 createGame('medium');
