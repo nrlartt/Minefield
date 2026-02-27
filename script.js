@@ -12,7 +12,6 @@ const boardEl = document.getElementById('board');
 const minesLeftEl = document.getElementById('mines-left');
 const timerEl = document.getElementById('timer');
 const statusEl = document.getElementById('status');
-const difficultyEl = document.getElementById('difficulty');
 const newGameBtn = document.getElementById('new-game');
 
 let game;
@@ -45,7 +44,7 @@ function calculateWinPoints() {
   return Math.min(2000, difficultyBase + speedBonus);
 }
 
-function createGame(mode = 'medium') {
+function createGame(mode = 'hard') {
   const cfg = configMap[mode];
   const total = cfg.cols * cfg.rows;
 
@@ -145,7 +144,7 @@ function stopTimer() {
   game.timerId = null;
 }
 
-function renderCell(i) {
+function renderCell(i, animateOpen = false) {
   const model = game.cells[i];
   const el = boardEl.children[i];
   el.className = 'cell';
@@ -153,6 +152,7 @@ function renderCell(i) {
 
   if (model.open) {
     el.classList.add('open');
+    if (animateOpen) el.classList.add('reveal-pop');
     if (model.mine) {
       el.classList.add('mine');
       el.textContent = '💣';
@@ -183,7 +183,7 @@ function floodOpen(i) {
     if (cell.open || cell.flagged) continue;
     cell.open = true;
     game.openedSafe += 1;
-    renderCell(cur);
+    renderCell(cur, true);
 
     if (cell.count === 0) {
       for (const n of neighbors(cur)) {
@@ -230,7 +230,7 @@ function openCell(i) {
 
   if (cell.mine) {
     cell.open = true;
-    renderCell(i);
+    renderCell(i, true);
     revealAllMines();
     game.over = true;
     stopTimer();
@@ -299,16 +299,11 @@ boardEl.addEventListener('touchend', (e) => {
 
 newGameBtn.addEventListener('click', () => {
   stopTimer();
-  createGame(difficultyEl.value);
-});
-
-difficultyEl.addEventListener('change', () => {
-  stopTimer();
-  createGame(difficultyEl.value);
+  createGame('hard');
 });
 
 window.addEventListener('beforeunload', sdkSavePoints);
 setInterval(sdkSavePoints, 30000);
 
 initSDK();
-createGame('medium');
+createGame('hard');
