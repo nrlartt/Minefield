@@ -13,8 +13,15 @@
 </head>
 <body>
   <main class="app">
-    <header class="topbar">
-      <h1>💣 Lila Minefield</h1>
+    <header class="hero">
+      <img src="./ui-hero.jpg" alt="Lila Minefield artwork" class="hero-art" />
+      <div class="hero-text">
+        <h1>💣 Lila Minefield</h1>
+        <p>Premium classic minesweeper experience.</p>
+      </div>
+    </header>
+
+    <section class="panel topbar">
       <div class="controls">
         <label>Difficulty
           <select id="difficulty">
@@ -25,15 +32,15 @@
         </label>
         <button id="new-game">New Game</button>
       </div>
-    </header>
+    </section>
 
-    <section class="hud">
+    <section class="panel hud">
       <div>🚩 Mines Left: <span id="mines-left">0</span></div>
       <div>⏱️ Time: <span id="timer">0</span>s</div>
       <div>Status: <span id="status">Ready</span></div>
     </section>
 
-    <section id="board" class="board" aria-label="Minesweeper board"></section>
+    <section id="board" class="board panel" aria-label="Minesweeper board"></section>
 
     <p class="help">
       Left click: reveal • Right click: flag • Mobile: long press = flag

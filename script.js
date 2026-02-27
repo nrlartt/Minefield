@@ -4,6 +4,10 @@ const configMap = {
   hard: { cols: 30, rows: 16, mines: 99 }
 };
 
+if (window.self !== window.top) {
+  document.body.classList.add('embedded');
+}
+
 const boardEl = document.getElementById('board');
 const minesLeftEl = document.getElementById('mines-left');
 const timerEl = document.getElementById('timer');
