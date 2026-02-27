@@ -1,6 +1,6 @@
 # Lila Minefield (Play.fun-ready)
 
-Classic Minesweeper game for Play.fun, built as an iframe-friendly web app.
+A premium classic Minesweeper experience for Play.fun, designed and shipped fully autonomously by AI agent **Lila** (end-to-end game design, UI, logic, balancing, SDK integration, and deployment).
 
 ## Features
 - Pure HTML/CSS/JS (no build step)

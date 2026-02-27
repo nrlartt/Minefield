@@ -11,6 +11,8 @@ if (window.self !== window.top) {
 const boardEl = document.getElementById('board');
 const minesLeftEl = document.getElementById('mines-left');
 const timerEl = document.getElementById('timer');
+const scoreEl = document.getElementById('score');
+const comboEl = document.getElementById('combo');
 const statusEl = document.getElementById('status');
 const newGameBtn = document.getElementById('new-game');
 
@@ -19,6 +21,7 @@ let game;
 const GAME_ID = 'e4d2c778-a41d-47e8-bbff-4490821495f0';
 let sdk = null;
 let sdkReady = false;
+let pendingSdkPoints = 0;
 
 function initSDK() {
   try {
@@ -29,19 +32,45 @@ function initSDK() {
 }
 
 function sdkAddPoints(points) {
-  if (!sdkReady || !sdk || !Number.isFinite(points) || points <= 0) return;
-  try { sdk.addPoints(Math.floor(points)); } catch (_) {}
+  if (!Number.isFinite(points) || points <= 0) return;
+  pendingSdkPoints += Math.floor(points);
+}
+
+function flushSdkPoints() {
+  if (!sdkReady || !sdk || pendingSdkPoints <= 0) return;
+  try { sdk.addPoints(pendingSdkPoints); pendingSdkPoints = 0; } catch (_) {}
 }
 
 function sdkSavePoints() {
   if (!sdkReady || !sdk) return;
+  flushSdkPoints();
   try { sdk.savePoints(); } catch (_) {}
 }
 
 function calculateWinPoints() {
   const difficultyBase = { easy: 120, medium: 260, hard: 520 }[game.mode] || 200;
   const speedBonus = Math.max(0, 240 - game.timer);
-  return Math.min(2000, difficultyBase + speedBonus);
+  const comboBonus = (game.bestCombo - 1) * 35;
+  return Math.min(2400, difficultyBase + speedBonus + comboBonus);
+}
+
+function addScore(points) {
+  if (!Number.isFinite(points) || points <= 0) return;
+  game.score += Math.floor(points);
+  sdkAddPoints(points);
+  updateHud();
+}
+
+function applyRevealReward(revealedCount) {
+  if (revealedCount <= 0) return;
+  if (revealedCount >= 2) game.combo += 1;
+  else game.combo = 1;
+  game.bestCombo = Math.max(game.bestCombo, game.combo);
+
+  const base = revealedCount * 4;
+  const zeroChainBonus = revealedCount >= 4 ? Math.floor(revealedCount * 1.5) : 0;
+  const comboMultiplier = 1 + (game.combo - 1) * 0.12;
+  addScore(Math.floor((base + zeroChainBonus) * comboMultiplier));
 }
 
 function fitBoardToViewport() {
@@ -74,6 +103,9 @@ function createGame(mode = 'hard') {
     won: false,
     flagsUsed: 0,
     openedSafe: 0,
+    score: 0,
+    combo: 1,
+    bestCombo: 1,
     timer: 0,
     timerId: null
   };
@@ -138,6 +170,8 @@ function plantMines(firstClickIdx) {
 function updateHud() {
   minesLeftEl.textContent = String(game.mines - game.flagsUsed);
   timerEl.textContent = String(game.timer);
+  scoreEl.textContent = String(game.score);
+  comboEl.textContent = `x${game.combo}`;
 }
 
 function setStatus(text) {
@@ -189,11 +223,13 @@ function revealAllMines() {
 
 function floodOpen(i) {
   const stack = [i];
+  let revealed = 0;
   while (stack.length) {
     const cur = stack.pop();
     const cell = game.cells[cur];
     if (cell.open || cell.flagged) continue;
     cell.open = true;
+    revealed += 1;
     game.openedSafe += 1;
     renderCell(cur, true);
 
@@ -204,6 +240,7 @@ function floodOpen(i) {
       }
     }
   }
+  return revealed;
 }
 
 function checkWin() {
@@ -213,7 +250,7 @@ function checkWin() {
     game.over = true;
     stopTimer();
     const reward = calculateWinPoints();
-    sdkAddPoints(reward);
+    addScore(reward);
     sdkSavePoints();
     setStatus(`You win! 🎉 +${reward} pts`);
 
@@ -245,13 +282,16 @@ function openCell(i) {
     renderCell(i, true);
     revealAllMines();
     game.over = true;
+    game.combo = 1;
     stopTimer();
+    updateHud();
     sdkSavePoints();
     setStatus('Boom! 💥');
     return;
   }
 
-  floodOpen(i);
+  const revealed = floodOpen(i);
+  applyRevealReward(revealed);
   checkWin();
 }
 
@@ -267,6 +307,10 @@ function toggleFlag(i) {
     if (game.flagsUsed >= game.mines) return;
     cell.flagged = true;
     game.flagsUsed += 1;
+    if (game.started) {
+      if (cell.mine) addScore(2);
+      else game.score = Math.max(0, game.score - 1);
+    }
   }
 
   renderCell(i);
