@@ -44,6 +44,16 @@ function calculateWinPoints() {
   return Math.min(2000, difficultyBase + speedBonus);
 }
 
+function fitBoardToViewport() {
+  if (!game || !boardEl.parentElement) return;
+  const areaWidth = Math.max(280, boardEl.parentElement.clientWidth - 24);
+  const gap = window.innerWidth <= 900 ? 1 : 2;
+  const cellSize = Math.max(10, Math.min(28, Math.floor((areaWidth - (game.cols - 1) * gap) / game.cols)));
+  boardEl.style.setProperty('--cell-gap', `${gap}px`);
+  boardEl.style.setProperty('--cell-size', `${cellSize}px`);
+  boardEl.style.gridTemplateColumns = `repeat(${game.cols}, var(--cell-size))`;
+}
+
 function createGame(mode = 'hard') {
   const cfg = configMap[mode];
   const total = cfg.cols * cfg.rows;
@@ -66,7 +76,6 @@ function createGame(mode = 'hard') {
     timerId: null
   };
 
-  boardEl.style.gridTemplateColumns = `repeat(${game.cols}, 28px)`;
   boardEl.innerHTML = '';
 
   for (let i = 0; i < game.cells.length; i++) {
@@ -76,6 +85,7 @@ function createGame(mode = 'hard') {
     boardEl.appendChild(cell);
   }
 
+  fitBoardToViewport();
   updateHud();
   setStatus('Ready');
 }
@@ -303,6 +313,7 @@ newGameBtn.addEventListener('click', () => {
 });
 
 window.addEventListener('beforeunload', sdkSavePoints);
+window.addEventListener('resize', fitBoardToViewport);
 setInterval(sdkSavePoints, 30000);
 
 initSDK();

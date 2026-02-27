@@ -133,17 +133,18 @@ button {
 
 .board {
   display: grid;
-  gap: 2px;
+  gap: var(--cell-gap, 2px);
   padding: 10px;
-  overflow: auto;
-  touch-action: manipulation;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  touch-action: none;
   user-select: none;
   background: linear-gradient(180deg, rgba(13, 22, 56, .85), rgba(9, 16, 40, .9));
 }
 
 .cell {
-  width: 28px;
-  height: 28px;
+  width: var(--cell-size, 28px);
+  height: var(--cell-size, 28px);
   display: grid;
   place-items: center;
   font-size: 15px;
@@ -201,4 +202,5 @@ button {
   .hero-art { width: 58px; height: 58px; }
   .layout { grid-template-columns: 1fr; }
   .sidebar { position: static; }
+  .board { --cell-gap: 1px; }
 }
