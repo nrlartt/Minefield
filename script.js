@@ -48,9 +48,11 @@ function fitBoardToViewport() {
   if (!game || !boardEl.parentElement) return;
   const areaWidth = Math.max(280, boardEl.parentElement.clientWidth - 24);
   const gap = window.innerWidth <= 900 ? 1 : 2;
-  const cellSize = Math.max(10, Math.min(28, Math.floor((areaWidth - (game.cols - 1) * gap) / game.cols)));
+  const cellSize = Math.max(14, Math.min(30, Math.floor((areaWidth - (game.cols - 1) * gap) / game.cols)));
+  const glyphSize = Math.max(10, Math.floor(cellSize * 0.56));
   boardEl.style.setProperty('--cell-gap', `${gap}px`);
   boardEl.style.setProperty('--cell-size', `${cellSize}px`);
+  boardEl.style.setProperty('--glyph-size', `${glyphSize}px`);
   boardEl.style.gridTemplateColumns = `repeat(${game.cols}, var(--cell-size))`;
 }
 
@@ -165,14 +167,14 @@ function renderCell(i, animateOpen = false) {
     if (animateOpen) el.classList.add('reveal-pop');
     if (model.mine) {
       el.classList.add('mine');
-      el.textContent = '💣';
+      el.innerHTML = '<span class="mine-icon">💣</span>';
     } else if (model.count > 0) {
       el.textContent = model.count;
       el.classList.add(`n${model.count}`);
     }
   } else if (model.flagged) {
     el.classList.add('flagged');
-    el.textContent = '🚩';
+    el.innerHTML = '<span class="flag-icon">🚩</span>';
   }
 }
 
