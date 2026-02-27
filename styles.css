@@ -1,0 +1,121 @@
+:root {
+  --bg: #0f1222;
+  --panel: #1b2040;
+  --cell: #2b335f;
+  --cell-open: #dce3f7;
+  --cell-border: #7a86bf;
+  --text: #eef2ff;
+  --accent: #7cf3ff;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: radial-gradient(circle at top, #1b2350, var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.topbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+h1 { margin: 0; font-size: 1.4rem; }
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+select, button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #5f6ab0;
+  background: #111633;
+  color: var(--text);
+}
+
+button {
+  cursor: pointer;
+  background: #1f2a64;
+  font-weight: 700;
+}
+
+.hud {
+  margin: 12px 0;
+  background: var(--panel);
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  border: 1px solid #394484;
+}
+
+.board {
+  display: grid;
+  gap: 2px;
+  background: #10152f;
+  border: 1px solid #33408b;
+  border-radius: 10px;
+  padding: 8px;
+  overflow: auto;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.cell {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 5px;
+  border: 1px solid var(--cell-border);
+  background: var(--cell);
+  cursor: pointer;
+}
+
+.cell.open {
+  background: var(--cell-open);
+  color: #17203b;
+  border-color: #aeb9e8;
+  cursor: default;
+}
+
+.cell.mine.open {
+  background: #ff9a9a;
+}
+
+.cell.flagged {
+  background: #29457c;
+}
+
+.n1 { color: #1e4ed8; }
+.n2 { color: #0f8a46; }
+.n3 { color: #be123c; }
+.n4 { color: #4c1d95; }
+.n5 { color: #8a2a16; }
+.n6 { color: #0f766e; }
+.n7 { color: #111827; }
+.n8 { color: #334155; }
+
+.help {
+  opacity: .85;
+  font-size: .9rem;
+}

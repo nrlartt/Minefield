@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lila Minefield</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <h1>💣 Lila Minefield</h1>
+      <div class="controls">
+        <label>Difficulty
+          <select id="difficulty">
+            <option value="easy">Easy (9x9, 10 mines)</option>
+            <option value="medium" selected>Medium (16x16, 40 mines)</option>
+            <option value="hard">Hard (30x16, 99 mines)</option>
+          </select>
+        </label>
+        <button id="new-game">New Game</button>
+      </div>
+    </header>
+
+    <section class="hud">
+      <div>🚩 Mines Left: <span id="mines-left">0</span></div>
+      <div>⏱️ Time: <span id="timer">0</span>s</div>
+      <div>Status: <span id="status">Ready</span></div>
+    </section>
+
+    <section id="board" class="board" aria-label="Minesweeper board"></section>
+
+    <p class="help">
+      Left click: reveal • Right click: flag • Mobile: long press = flag
+    </p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
